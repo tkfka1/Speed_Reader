@@ -1,24 +1,19 @@
 .textContainer {
-    width: 300px;
-    height: 500px;
-    overflow: auto;
-    border: 1px solid #ccc;
-    padding: 10px;
-    borderRadius: 5px;
-    boxShadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-right: 20px;
-    resize: both; /* 양방향으로 크기 조정 가능 */
-    overflow: auto; /* resize 속성을 사용하려면 overflow가 'visible'이 아니어야 합니다. */
-  }
-  
-  .textItem {
-    margin-bottom: 5px;
-    color: #333;
-  }
-  
-  .boldText {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #007BFF; /* Highlighted text color */
-  }
-  
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+  overflow-y: auto; /* 수직 스크롤바 표시 */
+  max-width: 100%; /* 최대 너비 설정 */
+  height: 300px; /* 예시 높이 값 */
+}
+
+.textItem {
+  padding: 5px 0;
+  cursor: pointer; /* 텍스트 항목에 마우스를 올렸을 때 포인터로 변경 */
+}
+
+.boldText {
+  padding: 5px 0;
+  font-weight: bold;
+  cursor: pointer;
+}

@@ -4,9 +4,10 @@ import styles from './TextList.module.css';
 interface TextListProps {
   texts: string[];
   currentLine: number;
+  onTextClick?: (text: string) => void; // 선택적 prop으로 변경
 }
 
-const TextList: React.FC<TextListProps> = ({ texts, currentLine }) => {
+const TextList: React.FC<TextListProps> = ({ texts, currentLine, onTextClick }) => {
   const currentItemRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -24,6 +25,7 @@ const TextList: React.FC<TextListProps> = ({ texts, currentLine }) => {
           key={index} 
           className={index === currentLine ? styles.boldText : styles.textItem}
           ref={index === currentLine ? currentItemRef : null}
+          onClick={() => onTextClick && onTextClick(text)} // 클릭 이벤트 핸들러 수정
         >
           {text}
         </div>

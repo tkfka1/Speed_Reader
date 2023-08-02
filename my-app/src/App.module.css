@@ -1,21 +1,46 @@
 .appContainer {
-    display: flex;
-    justifyContent: center;
-    alignItems: center;
-    height: 100vh;
-    backgroundColor: #f4f4f4;
-  }
-  
-  .controls {
-    display: flex;
-    gap: 10px;
-    marginTop: 20px;
-  }
-  
-  .intervalInput {
-    width: 80px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    borderRadius: 5px;
-  }
-  
+  display: flex;
+  flexDirection: column; /* 세로 방향으로 정렬 */
+  justifyContent: center;
+  alignItems: center;
+  height: 100vh;
+  backgroundColor: #f4f4f4;
+  padding: 20px; /* 컨테이너 주변에 패딩 추가 */
+}
+
+.controls {
+  display: flex;
+  flexDirection: column; /* 버튼들을 세로로 정렬 */
+  gap: 10px;
+  marginTop: 20px;
+  alignItems: center; /* 버튼들을 중앙으로 정렬 */
+}
+
+.intervalInput {
+  width: 80px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  borderRadius: 5px;
+  margin-right: 10px; /* 간격 추가 */
+}
+
+ul {
+  display: flex; /* 파일 목록을 가로로 정렬 */
+  gap: 10px; /* 파일 목록 사이의 간격 */
+  flexWrap: wrap; /* 필요한 경우 목록을 여러 줄로 나눔 */
+  justifyContent: center; /* 중앙 정렬 */
+  margin-bottom: 20px;
+}
+
+li {
+  listStyleType: none; /* 목록 항목 앞의 기호 제거 */
+  padding: 5px 10px; /* 간격 추가 */
+  border: 1px solid #ccc; /* 테두리 추가 */
+  borderRadius: 5px; /* 모서리 둥글게 */
+  cursor: pointer; /* 마우스 포인터 변경 */
+  transition: background-color 0.3s; /* 배경색 변경 애니메이션 */
+}
+
+li:hover {
+  backgroundColor: #e0e0e0; /* 마우스 오버 시 배경색 변경 */
+}

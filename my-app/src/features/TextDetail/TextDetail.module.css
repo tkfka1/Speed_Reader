@@ -1,16 +1,13 @@
 .detailContainer {
-    width: 300px; /* 동일한 너비 */
-    height: 500px; /* 동일한 높이 */
     border: 1px solid #ccc;
-    padding: 20px;
-    borderRadius: 5px;
-    boxShadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    fontSize: 18px;
-    color: #333;
-    resize: both; /* 양방향으로 크기 조정 가능 */
-    overflow: auto; /* resize 속성을 사용하려면 overflow가 'visible'이 아니어야 합니다. */
-    /* Flexbox를 사용하여 가운데 정렬 */
+    padding: 10px;
+    margin: 10px 0;
+    overflow-wrap: break-word; /* 긴 텍스트가 컨테이너를 벗어나지 않도록 함 */
+    max-width: 100%; /* 최대 너비 설정 */
+    resize: both; /* 사용자가 크기를 조절할 수 있도록 함 */
+    overflow: auto; /* 스크롤바 표시 */
+    height: 300px; /* 예시 높이 값 */
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* 가로 방향 중앙 정렬 */
+    align-items: center;     /* 세로 방향 중앙 정렬 */
 }
