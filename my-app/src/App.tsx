@@ -262,6 +262,11 @@ const App: React.FC = () => {
 
   return (
     <Container fluid className="mt-5">
+    <Row className="justify-content-center mb-4">
+      <Col xs={12} sm={10} md={8} lg={6} className="text-center">
+        <h1 className="logo-text">Speed Reader</h1> {/* 로고 텍스트를 추가합니다. */}
+      </Col>
+    </Row>
       {!isFileSelected ? (
         <>
           <Row className="justify-content-end align-items-center mb-3">
