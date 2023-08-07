@@ -4,7 +4,7 @@ import styles from './TextList.module.css';
 interface TextListProps {
   texts: string[];
   currentLine: number;
-  onTextClick?: (text: string) => void; // 선택적 prop으로 변경
+  onTextClick?: (text: string) => void;
 }
 
 const TextList: React.FC<TextListProps> = ({ texts, currentLine, onTextClick }) => {

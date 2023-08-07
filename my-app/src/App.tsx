@@ -1,60 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import TextList from './features/TextList/TextList';
-import TextDetail from './features/TextDetail/TextDetail';
-// import styles from './App.module.css';
-import { Container, Row, Col, Button, ListGroup, FormControl, InputGroup, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Button, FormControl, InputGroup } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import Header from './components/Header/Header';
+import AddTextModal from './components/AddTextModal/AddTextModal';
+import FileList from './components/FileList/FileList';
+import TextList from './features/TextList/TextList';
+import TextDetail from './features/TextDetail/TextDetail';
 
 const App: React.FC = () => {
+  // State Declarations
   const [darkMode, setDarkMode] = useState<boolean>(false);
-  const [fileList, setFileList] = useState<string[]>(['연결이 되지 않았습니다']); // 예제 파일 목록
+  const [fileList, setFileList] = useState<string[]>(['연결이 되지 않았습니다']);
   const [selectedFile, setSelectedFile] = useState<string>('');
   const [texts, setTexts] = useState<string[]>([]);
   const [currentText, setCurrentText] = useState<string>('');
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [intervalTime, setIntervalTime] = useState<number>(200);
-  const [tempIntervalTime, setTempIntervalTime] = useState<string>('200'); // 임시 간격 상태 추가
+  const [tempIntervalTime, setTempIntervalTime] = useState<string>('200');
   const [fontFamily, setFontFamily] = useState<string>('Arial');
   const [fontSize, setFontSize] = useState<number>(30);
   const [customFontSize, setCustomFontSize] = useState<string>(fontSize.toString());
-  const [fontWeight, setFontWeight] = useState<number>(400); // 기본값은 400 (일반 폰트)
+  const [fontWeight, setFontWeight] = useState<number>(400);
   const [isFileSelected, setIsFileSelected] = useState<boolean>(false);
   const [newTitle, setNewTitle] = useState<string>('');
   const [newText, setNewText] = useState<string>('');
-  const [showModal, setShowModal] = useState<boolean>(false);  // 모달 상태
-  const [wordsPerInterval, setWordsPerInterval] = useState<number>(1);
-  const [displayMode, setDisplayMode] = useState<number | 'sentence'>(1); // 1 for one word, 2 for two words, 3 for three words, 'sentence' for one sentence
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [displayMode, setDisplayMode] = useState<number | 'sentence'>(1);
+  const [buttonVariant, setButtonVariant] = useState<"dark" | "light">("dark");
+  const [toggleDisplay, setToggleDisplay] = useState(true);
 
 
+
+
+  // Modal Control
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
-
+  // Display Mode Control
   const setDisplay = (mode: number | 'sentence') => {
     setDisplayMode(mode);
-    setCurrentWordIndex(0); // Whenever the mode changes, reset the index
+    setCurrentWordIndex(0);
   };
 
-  let currentDisplay = '';
-  const words = currentText.split(' ');
-  
+  // // Determine Current Display Text
+  // let currentDisplay = '';
+  // const words = currentText.split(' ');
+
+  // if (displayMode === 'sentence') {
+  //   const sentences = currentText.split('.');
+  //   currentDisplay = sentences[currentWordIndex] || '';
+  // } else {
+  //   currentDisplay = words.slice(currentWordIndex, currentWordIndex + displayMode).join(' ');
+  // }
+
+
+  // Determine Current Display Text
+let currentDisplay = '';
+const words = currentText.split(' ');
+
+if (!toggleDisplay) {
+  currentDisplay = ''; // toggleDisplay가 false일 경우 빈 화면 출력
+} else {
   if (displayMode === 'sentence') {
-    const sentences = currentText.split('.'); // Assuming sentences are separated by periods
+    const sentences = currentText.split('.');
     currentDisplay = sentences[currentWordIndex] || '';
   } else {
     currentDisplay = words.slice(currentWordIndex, currentWordIndex + displayMode).join(' ');
   }
-  
-  const handleNewTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTitle(e.target.value);
-  };
+}
 
-  const handleNewTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewText(e.target.value);
-  };
-
+  // Handle New Text Addition
+  const handleNewTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => setNewTitle(e.target.value);
+  const handleNewTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setNewText(e.target.value);
   const handleFormSubmit = async () => {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/add-text", {
@@ -91,15 +110,21 @@ const App: React.FC = () => {
     fetchFiles();
   }, []);
 
+  // Dark Mode Toggle
   const toggleDarkMode = () => {
     setDarkMode(prev => !prev);
-    if (!darkMode) {
-      document.body.classList.add('dark-mode');
+    document.body.classList.toggle('dark-mode', !darkMode);
+    if (darkMode) {
+      // Dark Mode에서 Light Mode로 변경할 때 variant 값을 "dark"로 설정
+      setButtonVariant("dark");
     } else {
-      document.body.classList.remove('dark-mode');
+      // Light Mode에서 Dark Mode로 변경할 때 variant 값을 "light"로 설정
+      setButtonVariant("light");
     }
   };
 
+
+  // File Selection and Text Loading
   const handleTitleSelect = (title: string) => {
     setSelectedFile(title);
     fetch(`http://127.0.0.1:8000/api/text/${title}`)
@@ -117,26 +142,29 @@ const App: React.FC = () => {
     setCustomFontSize(e.target.value);
   };
 
-  const applyCustomFontSize = () => {
-    const newSize = parseInt(customFontSize, 10);
-    if (!isNaN(newSize)) {
-      setFontSize(newSize);
-    }
-  };
   const handleTempIntervalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempIntervalTime(e.target.value); // 임시 간격 값 업데이트
   };
 
-  const handleFontChange = (font: string) => {
-    setFontFamily(font);
-  };
 
+  // Font and Size Adjustments
+  const handleFontChange = (font: string) => setFontFamily(font);
   const handleFontSizeChange = (size: number) => {
     const newSize = fontSize + size;
     setFontSize(newSize);
-    setCustomFontSize(newSize.toString()); // customFontSize도 업데이트
+    setCustomFontSize(newSize.toString());
+  };
+  const applyCustomFontSize = () => {
+    const newSize = parseInt(customFontSize, 10);
+    if (!isNaN(newSize)) setFontSize(newSize);
   };
 
+  const handleFontBold = () => {
+    setFontWeight(700); // 700은 굵은 폰트의 fontWeight 값
+  };
+  const handleFontNormal = () => {
+    setFontWeight(400); // 400은 일반 폰트의 fontWeight 값
+  };
   const applyIntervalTime = () => {
     const value = Number(tempIntervalTime);
     setIntervalTime(value);
@@ -146,32 +174,68 @@ const App: React.FC = () => {
     }
   };
 
+  // // Text Playback and Control
+  // const handleStart = () => {
+  //   if (intervalId) return;
+  //   const id = setInterval(() => {
+  //     if (displayMode === 'sentence') {
+  //       const sentences = currentText.split('.'); // Assuming sentences are separated by periods
+  //       if (currentWordIndex < sentences.length - 1) {
+
+  //         setToggleDisplay(prev => {
+  //           console.log("Before:", prev);  // 이전 상태 출력
+  //           if (prev === true) {
+  //             setCurrentWordIndex(prev => prev + 1);
+  //           }
+  //           return !prev; // 값 변경
+  //         });
+  //       } else {
+  //         clearInterval(id);
+  //       }
+  //     } else {
+  //       if (currentWordIndex < words.length - displayMode) {
+
+  //         setToggleDisplay(prev => {
+  //           console.log("Before:", prev);  // 이전 상태 출력
+  //           if (prev === true) {
+  //             setCurrentWordIndex(prev => prev + displayMode);
+  //           }
+  //           return !prev; // 값 변경
+  //         });
+  //       } else {
+  //         clearInterval(id);
+  //       }
+  //     }
+  //   }, intervalTime);
+  //   setIntervalId(id);
+  // };
 
 
 
-
-  const handleStart = () => {
-    if (intervalId) return;
-  
-    const id = setInterval(() => {
-      if (displayMode === 'sentence') {
-        const sentences = currentText.split('.'); // Assuming sentences are separated by periods
-        if (currentWordIndex < sentences.length - 1) {
-          setCurrentWordIndex(prev => prev + 1);
+    // Text Playback and Control
+    const handleStart = () => {
+      if (intervalId) return;
+      const id = setInterval(() => {
+        if (displayMode === 'sentence') {
+          const sentences = currentText.split('.'); // Assuming sentences are separated by periods
+          if (currentWordIndex < sentences.length - 1) {
+            setCurrentWordIndex(prev => prev + 1);
+          } else {
+            clearInterval(id);
+          }
         } else {
-          clearInterval(id);
+          if (currentWordIndex < words.length - displayMode) {
+            setCurrentWordIndex(prev => prev + displayMode);
+          } else {
+            clearInterval(id);
+          }
         }
-      } else {
-        if (currentWordIndex < words.length - displayMode) {
-          setCurrentWordIndex(prev => prev + displayMode);
-        } else {
-          clearInterval(id);
-        }
-      }
-    }, intervalTime);
-    setIntervalId(id);
-  };
+      }, intervalTime);
+      setIntervalId(id);
+    };
   
+
+
 
   const handleStop = () => {
     if (intervalId) {
@@ -180,28 +244,13 @@ const App: React.FC = () => {
     }
   };
 
+
   const handleReset = () => {
     setCurrentWordIndex(0);
     if (intervalId) {
       clearInterval(intervalId);
       setIntervalId(null);
     }
-  };
-
-  const handleIntervalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    setIntervalTime(value);
-    if (intervalId) {
-      clearInterval(intervalId);
-      handleStart();
-    }
-  };
-  const handleFontBold = () => {
-    setFontWeight(700); // 700은 굵은 폰트의 fontWeight 값
-  };
-
-  const handleFontNormal = () => {
-    setFontWeight(400); // 400은 일반 폰트의 fontWeight 값
   };
 
   const handleSpeedUp = () => {
@@ -215,9 +264,6 @@ const App: React.FC = () => {
     setIntervalTime(newIntervalTime);
     setTempIntervalTime(newIntervalTime.toString()); // 임시 간격 값도 업데이트
   };
-
-  const currentWords = currentText.split(' ').slice(currentWordIndex, currentWordIndex + wordsPerInterval).join(' ') || '';
-
 
   const getCurrentLineIndex = () => {
     if (displayMode === 'sentence') {
@@ -234,14 +280,15 @@ const App: React.FC = () => {
       return 0;
     }
   };
+
   const handleDeleteFile = async (e: React.MouseEvent, title: string) => {
     e.stopPropagation(); // Prevent triggering other click events
-  
+
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/text/${title}`, {
         method: 'DELETE',
       });
-  
+
       if (response.ok) {
         setFileList(prev => prev.filter(t => t !== title));
       } else {
@@ -251,7 +298,7 @@ const App: React.FC = () => {
       console.error("Error deleting file:", error);
     }
   };
-  
+
 
   const handleTextClick = (selectedText: string) => {
     setCurrentText(selectedText);
@@ -260,43 +307,35 @@ const App: React.FC = () => {
 
   const currentLineIndex = getCurrentLineIndex();
 
+
+
+
   return (
     <Container fluid className="mt-5">
-    <Row className="justify-content-center mb-4">
-      <Col xs={12} sm={10} md={8} lg={6} className="text-center">
-        <h1 className="logo-text">Speed Reader</h1> {/* 로고 텍스트를 추가합니다. */}
-      </Col>
-    </Row>
+      {/* Header 컴포넌트를 렌더링합니다. */}
+      <Header />
+
+
+
+      {/* 파일에 들어갔을 때 */}
       {!isFileSelected ? (
         <>
           <Row className="justify-content-end align-items-center mb-3">
             <Col xs="auto">
-              <Button variant={darkMode ? "light" : "dark"} onClick={toggleDarkMode}>
-                {darkMode ? 'Light Mode' : 'Dark Mode'}
+              <Button variant={buttonVariant} onClick={toggleDarkMode}>
+                {darkMode ? "Light Mode" : "Dark Mode"}
               </Button>
-            </Col>
-          </Row>
-          <Row className="justify-content-center">
-            <Col xs={12} sm={10} md={8} lg={6}>
-              <ListGroup>
-                {fileList.map(title => (
-                  <ListGroup.Item action key={title} onClick={() => handleTitleSelect(title)}>
-  <div className="d-flex justify-content-between align-items-center">
-    <span className="mr-2">{title}</span>
-    <Button 
-      variant="danger" 
-      size="sm" 
-      onClick={(e) => handleDeleteFile(e, title)}
-    >
-      -
-    </Button>
-    </div>
 
-                    </ListGroup.Item>
-                ))}
-              </ListGroup>
+
             </Col>
           </Row>
+          {/* FileList 컴포넌트를 렌더링합니다. */}
+          <FileList
+            fileList={fileList}
+            handleTitleSelect={handleTitleSelect}
+            handleDeleteFile={handleDeleteFile}
+          />
+
 
           <Row className="justify-content-center mt-3">
             <Col xs={12} sm={10} md={8} lg={6}>
@@ -304,39 +343,17 @@ const App: React.FC = () => {
             </Col>
           </Row>
 
-          <Modal show={showModal} onHide={handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>텍스트 추가하기</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>제목</InputGroup.Text>
-                <FormControl
-                  type="text"
-                  value={newTitle}
-                  onChange={handleNewTitleChange}
-                  placeholder="새 제목 입력"
-                />
-              </InputGroup>
-              <InputGroup>
-                <InputGroup.Text>내용</InputGroup.Text>
-                <FormControl
-                  as="textarea"
-                  value={newText}
-                  onChange={handleNewTextChange}
-                  placeholder="내용 입력"
-                />
-              </InputGroup>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                닫기
-              </Button>
-              <Button variant="primary" onClick={() => { handleFormSubmit(); handleClose(); }}>
-                추가하기
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          {/* AddTextModal 컴포넌트를 렌더링합니다. */}
+          <AddTextModal
+            showModal={showModal}
+            newTitle={newTitle}
+            newText={newText}
+            handleNewTitleChange={handleNewTitleChange}
+            handleNewTextChange={handleNewTextChange}
+            handleShow={handleShow}
+            handleClose={handleClose}
+            handleFormSubmit={handleFormSubmit}
+          />
         </>
       ) : (
         <>
@@ -345,24 +362,26 @@ const App: React.FC = () => {
               <Button variant="secondary" onClick={() => setIsFileSelected(false)}>나가기</Button>
             </Col>
             <Col xs="auto">
-              <Button variant={darkMode ? "light" : "dark"} onClick={toggleDarkMode}>
-                {darkMode ? 'Light Mode' : 'Dark Mode'}
+              <Button variant={buttonVariant} onClick={toggleDarkMode}>
+                {darkMode ? "Light Mode" : "Dark Mode"}
               </Button>
+
+
             </Col>
           </Row>
           <Row>
             <Col xs={12} sm={12} md={6} lg={6}>
-            <TextDetail
-  text={currentDisplay}
-  fontFamily={fontFamily}
-  fontSize={fontSize}
-  fontWeight={fontWeight}
-/>
+              <TextDetail
+                text={currentDisplay}
+                fontFamily={fontFamily}
+                fontSize={fontSize}
+                fontWeight={fontWeight}
+              />
               <div className="mt-3">
-              <Button onClick={() => setDisplay(1)} className="mr-2">한 단어</Button>
-<Button onClick={() => setDisplay(2)} className="mr-2">2단어</Button>
-<Button onClick={() => setDisplay(3)} className="mr-2">3단어</Button>
-<Button onClick={() => setDisplay('sentence')} className="mr-2">한 문장</Button>
+                <Button onClick={() => setDisplay(1)} className="mr-2">한 단어</Button>
+                <Button onClick={() => setDisplay(2)} className="mr-2">2단어</Button>
+                <Button onClick={() => setDisplay(3)} className="mr-2">3단어</Button>
+                <Button onClick={() => setDisplay('sentence')} className="mr-2">한 문장</Button>
 
               </div>
               <div className="mt-3">
@@ -388,8 +407,9 @@ const App: React.FC = () => {
                 </InputGroup>
               </div>
             </Col>
+
             <Col xs={12} sm={12} md={6} lg={6}>
-            <TextList texts={texts} currentLine={currentLineIndex} onTextClick={handleTextClick} />
+              <TextList texts={texts} currentLine={currentLineIndex} onTextClick={handleTextClick} />
 
               <div className="mt-3">
                 <InputGroup className="mb-3">
