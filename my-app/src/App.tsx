@@ -220,12 +220,16 @@ if (!toggleDisplay) {
           const sentences = currentText.split('.'); // Assuming sentences are separated by periods
           if (currentWordIndex < sentences.length - 1) {
             setCurrentWordIndex(prev => prev + 1);
+
           } else {
             clearInterval(id);
           }
         } else {
           if (currentWordIndex < words.length - displayMode) {
             setCurrentWordIndex(prev => prev + displayMode);
+            setTimeout(() => {
+              // 다음 로직 또는 함수를 50ms 후에 실행
+            }, 500);
           } else {
             clearInterval(id);
           }
