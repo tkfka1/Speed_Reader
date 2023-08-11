@@ -9,9 +9,7 @@ client = AsyncIOMotorClient(DATABASE_URL)
 database = client.mydatabase  # 'mydatabase'라는 이름의 데이터베이스 사용
 collection = database.texts  # 'texts'라는 이름의 컬렉션 사용
 
-
 app = FastAPI()
-
 
 class TextItem(BaseModel):
     title: str
@@ -26,7 +24,6 @@ async def add_text(item: TextItem):
     if result.inserted_id:
         return {"success": True, "message": "Data inserted successfully"}
     return {"success": False, "message": "Data insertion failed"}
-
 
 # CORS 설정
 app.add_middleware(
@@ -57,40 +54,3 @@ async def delete_text(title: str):
     if result.deleted_count:
         return {"success": True, "message": f"'{title}' deleted successfully"}
     return {"success": False, "message": f"Failed to delete '{title}' or '{title}' does not exist"}
-
-
-
-
-# # 초기 데이터
-# initial_data = [
-#     {"title": "제목1", "text": "제목1에 대한 내용입니다."},
-#     {"title": "제목2", "text": "제목2의 내용은 이렇습니다."},
-#     {"title": "제목3", "text": "제목3의 내용입니다."},
-# ]
-
-# # 데이터베이스에 초기 데이터 삽입 (이 부분은 한 번만 실행)
-# async def initialize_data():
-#     await collection.insert_many(initial_data)
-
-# # 초기화 함수 실행 (필요할 때만)
-# import asyncio
-# asyncio.run(initialize_data())
-
-
-
-
-
-# from pymongo.mongo_client import MongoClient
-# from pymongo.server_api import ServerApi
-
-# uri = "mongodb+srv://tkfka0502:<password>@cluster0.zfqrsdd.mongodb.net/?retryWrites=true&w=majority"
-
-# # Create a new client and connect to the server
-# client = MongoClient(uri, server_api=ServerApi('1'))
-
-# # Send a ping to confirm a successful connection
-# try:
-#     client.admin.command('ping')
-#     print("Pinged your deployment. You successfully connected to MongoDB!")
-# except Exception as e:
-#     print(e)
