@@ -14,7 +14,11 @@ const TextList: React.FC<TextListProps> = ({ texts, currentLine, onTextClick }) 
   useEffect(() => {
     if (currentItemRef.current && containerRef.current) {
       const topPos = currentItemRef.current.offsetTop;
-      containerRef.current.scrollTop = topPos - (containerRef.current.clientHeight / 2);
+      const containerHeight = containerRef.current.clientHeight;
+      const itemHeight = currentItemRef.current.clientHeight;
+
+      // 아이템의 중앙을 컨테이너의 중앙에 위치시킵니다.
+      containerRef.current.scrollTop = topPos - (containerHeight / 2) + (itemHeight / 2) - 150; // -150은 textContainer의 상단 패딩 값을 보정합니다.
     }
   }, [currentLine]);
 
@@ -25,7 +29,7 @@ const TextList: React.FC<TextListProps> = ({ texts, currentLine, onTextClick }) 
           key={index} 
           className={index === currentLine ? styles.boldText : styles.textItem}
           ref={index === currentLine ? currentItemRef : null}
-          onClick={() => onTextClick && onTextClick(text)} // 클릭 이벤트 핸들러 수정
+          onClick={() => onTextClick && onTextClick(text)}
         >
           {text}
         </div>

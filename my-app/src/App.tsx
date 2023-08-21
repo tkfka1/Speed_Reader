@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, FormControl, InputGroup } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import Header from './components/Header/Header';
 import AddTextModal from './components/AddTextModal/AddTextModal';
 import FileList from './components/FileList/FileList';
@@ -31,9 +30,6 @@ const App: React.FC = () => {
   const [buttonVariant, setButtonVariant] = useState<"dark" | "light">("dark");
   const [toggleDisplay, setToggleDisplay] = useState(true);
 
-
-
-
   // Modal Control
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
@@ -44,19 +40,6 @@ const App: React.FC = () => {
     setCurrentWordIndex(0);
   };
 
-  // // Determine Current Display Text
-  // let currentDisplay = '';
-  // const words = currentText.split(' ');
-
-  // if (displayMode === 'sentence') {
-  //   const sentences = currentText.split('.');
-  //   currentDisplay = sentences[currentWordIndex] || '';
-  // } else {
-  //   currentDisplay = words.slice(currentWordIndex, currentWordIndex + displayMode).join(' ');
-  // }
-
-
-  // Determine Current Display Text
 let currentDisplay = '';
 const words = currentText.split(' ');
 
@@ -123,7 +106,6 @@ if (!toggleDisplay) {
     }
   };
 
-
   // File Selection and Text Loading
   const handleTitleSelect = (title: string) => {
     setSelectedFile(title);
@@ -145,7 +127,6 @@ if (!toggleDisplay) {
   const handleTempIntervalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempIntervalTime(e.target.value); // 임시 간격 값 업데이트
   };
-
 
   // Font and Size Adjustments
   const handleFontChange = (font: string) => setFontFamily(font);
@@ -174,44 +155,6 @@ if (!toggleDisplay) {
     }
   };
 
-  // // Text Playback and Control
-  // const handleStart = () => {
-  //   if (intervalId) return;
-  //   const id = setInterval(() => {
-  //     if (displayMode === 'sentence') {
-  //       const sentences = currentText.split('.'); // Assuming sentences are separated by periods
-  //       if (currentWordIndex < sentences.length - 1) {
-
-  //         setToggleDisplay(prev => {
-  //           console.log("Before:", prev);  // 이전 상태 출력
-  //           if (prev === true) {
-  //             setCurrentWordIndex(prev => prev + 1);
-  //           }
-  //           return !prev; // 값 변경
-  //         });
-  //       } else {
-  //         clearInterval(id);
-  //       }
-  //     } else {
-  //       if (currentWordIndex < words.length - displayMode) {
-
-  //         setToggleDisplay(prev => {
-  //           console.log("Before:", prev);  // 이전 상태 출력
-  //           if (prev === true) {
-  //             setCurrentWordIndex(prev => prev + displayMode);
-  //           }
-  //           return !prev; // 값 변경
-  //         });
-  //       } else {
-  //         clearInterval(id);
-  //       }
-  //     }
-  //   }, intervalTime);
-  //   setIntervalId(id);
-  // };
-
-
-
     // Text Playback and Control
     const handleStart = () => {
       if (intervalId) return;
@@ -227,9 +170,6 @@ if (!toggleDisplay) {
         } else {
           if (currentWordIndex < words.length - displayMode) {
             setCurrentWordIndex(prev => prev + displayMode);
-            setTimeout(() => {
-              // 다음 로직 또는 함수를 50ms 후에 실행
-            }, 500);
           } else {
             clearInterval(id);
           }
@@ -237,9 +177,6 @@ if (!toggleDisplay) {
       }, intervalTime);
       setIntervalId(id);
     };
-  
-
-
 
   const handleStop = () => {
     if (intervalId) {
@@ -247,7 +184,6 @@ if (!toggleDisplay) {
       setIntervalId(null);
     }
   };
-
 
   const handleReset = () => {
     setCurrentWordIndex(0);
@@ -311,15 +247,10 @@ if (!toggleDisplay) {
 
   const currentLineIndex = getCurrentLineIndex();
 
-
-
-
   return (
     <Container fluid className="mt-5">
       {/* Header 컴포넌트를 렌더링합니다. */}
       <Header />
-
-
 
       {/* 파일에 들어갔을 때 */}
       {!isFileSelected ? (
@@ -329,8 +260,6 @@ if (!toggleDisplay) {
               <Button variant={buttonVariant} onClick={toggleDarkMode}>
                 {darkMode ? "Light Mode" : "Dark Mode"}
               </Button>
-
-
             </Col>
           </Row>
           {/* FileList 컴포넌트를 렌더링합니다. */}
@@ -339,7 +268,6 @@ if (!toggleDisplay) {
             handleTitleSelect={handleTitleSelect}
             handleDeleteFile={handleDeleteFile}
           />
-
 
           <Row className="justify-content-center mt-3">
             <Col xs={12} sm={10} md={8} lg={6}>
@@ -369,8 +297,6 @@ if (!toggleDisplay) {
               <Button variant={buttonVariant} onClick={toggleDarkMode}>
                 {darkMode ? "Light Mode" : "Dark Mode"}
               </Button>
-
-
             </Col>
           </Row>
           <Row>
